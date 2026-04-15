@@ -65,4 +65,4 @@ Want to help build the site itself? Pull requests are welcome. If you want to co
 ## Dev team
 
 - [Arash Shalchian](https://shalchian.dev)
-- [Vy Nguyen](https://vy-software-dev.vercel.app)
+- [Vy Nguyen](https://vynguyen.dev)
