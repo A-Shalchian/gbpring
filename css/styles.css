@@ -473,6 +473,217 @@ body {
   color: #0077c2;
 }
 
+.tutorial-fab {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  height: 36px;
+  border-radius: 18px;
+  background: #1a1a1f;
+  border: 1px solid #2a2a30;
+  color: #d0d0d6;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  z-index: 500;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+
+.tutorial-fab:hover,
+.tutorial-fab:focus-visible {
+  border-color: #0077c2;
+  color: #0077c2;
+  background: rgba(0, 119, 194, 0.08);
+}
+
+.tutorial-fab svg {
+  color: #6b6b75;
+  flex-shrink: 0;
+  transition: color 0.2s;
+}
+
+.tutorial-fab:hover svg,
+.tutorial-fab:focus-visible svg {
+  color: #0077c2;
+}
+
+body.chart-open .tutorial-fab {
+  display: none;
+}
+
+.tutorial-card {
+  background: #111114;
+  border: 1px solid #2a2a30;
+  border-radius: 16px;
+  padding: 56px 32px 32px;
+  width: min(92vw, 520px);
+  max-height: 85vh;
+  overflow-y: auto;
+  text-align: left;
+}
+
+.tutorial-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 40px;
+  height: 40px;
+  background: #1a1a1f;
+  border: 1px solid #2a2a30;
+  border-radius: 50%;
+  color: #e0e0e0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.tutorial-close:hover {
+  border-color: #0077c2;
+  color: #0077c2;
+}
+
+.tutorial-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.tutorial-sub {
+  font-size: 13px;
+  color: #6b6b75;
+  margin-top: 6px;
+}
+
+.tutorial-steps {
+  margin: 20px 0 24px 20px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  color: #a8a8b2;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.tutorial-steps li::marker {
+  color: #4a4a54;
+  font-weight: 600;
+}
+
+.tutorial-steps strong {
+  color: #e0e0e0;
+  font-weight: 600;
+}
+
+.tutorial-steps a {
+  color: #0077c2;
+  text-decoration: none;
+}
+
+.tutorial-steps a:hover {
+  text-decoration: underline;
+}
+
+.tutorial-steps code {
+  background: #1a1a1f;
+  border: 1px solid #2a2a30;
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-family: inherit;
+  font-size: 12px;
+  color: #d0d0d6;
+}
+
+.tutorial-steps pre {
+  margin-top: 8px;
+  background: #1a1a1f;
+  border: 1px solid #2a2a30;
+  border-radius: 8px;
+  padding: 10px 12px;
+  overflow-x: auto;
+}
+
+.tutorial-steps pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 12px;
+  color: #d0d0d6;
+  white-space: pre;
+}
+
+.tutorial-cta {
+  display: inline-block;
+  padding: 10px 18px;
+  background: #0077c2;
+  color: #ffffff;
+  border-radius: 10px;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.tutorial-cta:hover {
+  background: #0086db;
+}
+
+.tutorial-star {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid #1e1e22;
+  font-size: 12px;
+  line-height: 1.55;
+  color: #6b6b75;
+}
+
+.tutorial-star svg {
+  color: #f5b400;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.tutorial-star a {
+  color: #f5b400;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.tutorial-star a:hover {
+  text-decoration: underline;
+}
+
+.tutorial-card {
+  scrollbar-width: thin;
+  scrollbar-color: #2a2a30 transparent;
+}
+
+.tutorial-card::-webkit-scrollbar { width: 6px; height: 6px; }
+.tutorial-card::-webkit-scrollbar-track { background: transparent; }
+.tutorial-card::-webkit-scrollbar-thumb { background: #2a2a30; border-radius: 4px; }
+.tutorial-card::-webkit-scrollbar-thumb:hover { background: #3a3a44; }
+
+.tutorial-steps pre {
+  scrollbar-width: thin;
+  scrollbar-color: #2a2a30 transparent;
+}
+
+.tutorial-steps pre::-webkit-scrollbar { width: 6px; height: 6px; }
+.tutorial-steps pre::-webkit-scrollbar-track { background: transparent; }
+.tutorial-steps pre::-webkit-scrollbar-thumb { background: #2a2a30; border-radius: 4px; }
+.tutorial-steps pre::-webkit-scrollbar-thumb:hover { background: #3a3a44; }
+
 .chart-fab {
   display: none;
   position: fixed;
@@ -589,12 +800,20 @@ body {
   body.chart-open {
     overflow: hidden;
   }
+
+  .tutorial-fab {
+    top: auto;
+    right: auto;
+    bottom: 20px;
+    left: 20px;
+  }
 }
 
 @media (max-width: 560px) {
   .logo-area { flex-wrap: wrap; }
   .gh-star-btn { order: 2; margin-left: auto; }
   .chart-fab { bottom: 16px; right: 16px; height: 48px; }
+  .tutorial-fab { bottom: 16px; left: 16px; }
 }
 
 @media (max-width: 480px) {

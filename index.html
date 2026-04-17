@@ -176,6 +176,52 @@
 
   </div>
 
+  <button class="tutorial-fab" id="tutorial-fab" aria-label="How to join the webring">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"></circle>
+      <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+      <line x1="12" y1="17" x2="12.01" y2="17"></line>
+    </svg>
+    <span>How to join</span>
+  </button>
+
+  <div class="modal-overlay" id="tutorial-modal">
+    <div class="modal-content tutorial-card">
+      <button class="modal-close tutorial-close" id="tutorial-modal-close" aria-label="Close tutorial">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+      <div class="tutorial-title">Join the webring</div>
+      <div class="tutorial-sub">Four steps. Takes about five minutes.</div>
+      <ol class="tutorial-steps">
+        <li>
+          <strong>Fork the repo</strong> on
+          <a href="https://github.com/A-Shalchian/gbpring" target="_blank" rel="noopener">GitHub</a>.
+        </li>
+        <li>
+          <strong>Add yourself to <code>sites.json</code></strong>:
+          <pre><code>{ "name": "Your Name", "year": 2026, "website": "https://yoursite.dev" }</code></pre>
+        </li>
+        <li>
+          <strong>Add the badge</strong> somewhere visible on your site so the CI check passes:
+          <pre><code>&lt;a href="https://gbp-ring.com"&gt;GBP CS Webring&lt;/a&gt;</code></pre>
+        </li>
+        <li>
+          <strong>Open a pull request</strong>. Once it merges, your dot joins the ring.
+        </li>
+      </ol>
+      <a class="tutorial-cta" href="https://github.com/A-Shalchian/gbpring/fork" target="_blank" rel="noopener">Fork on GitHub</a>
+      <p class="tutorial-star">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+        </svg>
+        <span>P.S. while you're there, <a href="https://github.com/A-Shalchian/gbpring" target="_blank" rel="noopener">star the repo</a>. I know stars are sacred, but I genuinely need this one. (My mom's not homeless, I swear.)</span>
+      </p>
+    </div>
+  </div>
+
   <button class="chart-fab" id="chart-fab" aria-label="Open webring map">
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <circle cx="12" cy="12" r="3"></circle>
@@ -322,6 +368,14 @@
       document.getElementById('goal-preview-btn').addEventListener('click', () => modal.classList.add('active'));
       document.getElementById('modal-close').addEventListener('click', () => modal.classList.remove('active'));
       modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('active'); });
+
+      const tutorialModal = document.getElementById('tutorial-modal');
+      document.getElementById('tutorial-fab').addEventListener('click', () => tutorialModal.classList.add('active'));
+      document.getElementById('tutorial-modal-close').addEventListener('click', () => tutorialModal.classList.remove('active'));
+      tutorialModal.addEventListener('click', (e) => { if (e.target === tutorialModal) tutorialModal.classList.remove('active'); });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && tutorialModal.classList.contains('active')) tutorialModal.classList.remove('active');
+      });
 
       const chartWrap = document.getElementById('chart-wrap');
       const chartFab = document.getElementById('chart-fab');
