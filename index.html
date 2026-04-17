@@ -38,7 +38,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="./css/styles.css" />
 
   <script src="https://d3js.org/d3.v7.min.js" defer></script>
@@ -94,6 +94,12 @@
           <span class="logo-ring">science</span>
           <span class="logo-ring">webring</span>
         </div>
+        <a class="gh-star-btn" href="https://github.com/A-Shalchian/gbpring" target="_blank" rel="noopener">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+          </svg>
+          <span>Star on GitHub</span>
+        </a>
       </div>
 
       <p class="welcome-text">
@@ -134,32 +140,56 @@
       <div class="students-header">Members</div>
       <div class="student-list" id="student-list"></div>
 
+      <div class="left-footer">
+        <div class="dev-team">
+          <span class="dev-team-label">Dev team:</span>
+          <button class="dev-team-link" data-dev="arash">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="16 18 22 12 16 6"></polyline>
+              <polyline points="8 6 2 12 8 18"></polyline>
+            </svg>
+            Arash Shalchian
+          </button>
+          <button class="dev-team-link" data-dev="vy">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="16 18 22 12 16 6"></polyline>
+              <polyline points="8 6 2 12 8 18"></polyline>
+            </svg>
+            Vy Nguyen
+          </button>
+        </div>
+      </div>
+
     </div>
 
-    <div class="right-panel">
-      <div class="dev-team">
-        <span class="dev-team-label">Dev team:</span>
-        <button class="dev-team-link" data-dev="arash">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="16 18 22 12 16 6"></polyline>
-            <polyline points="8 6 2 12 8 18"></polyline>
-          </svg>
-          Arash Shalchian
-        </button>
-        <button class="dev-team-link" data-dev="vy">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="16 18 22 12 16 6"></polyline>
-            <polyline points="8 6 2 12 8 18"></polyline>
-          </svg>
-          Vy Nguyen
-        </button>
-      </div>
+    <div class="chart-wrap" id="chart-wrap">
+      <button class="chart-close" id="chart-close" aria-label="Close map">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
       <div class="chart-box">
         <div id="chart-container"></div>
       </div>
     </div>
 
   </div>
+
+  <button class="chart-fab" id="chart-fab" aria-label="Open webring map">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="3"></circle>
+      <circle cx="5" cy="6" r="1.5"></circle>
+      <circle cx="19" cy="6" r="1.5"></circle>
+      <circle cx="5" cy="18" r="1.5"></circle>
+      <circle cx="19" cy="18" r="1.5"></circle>
+      <line x1="6.3" y1="7" x2="10" y2="10.5"></line>
+      <line x1="17.7" y1="7" x2="14" y2="10.5"></line>
+      <line x1="6.3" y1="17" x2="10" y2="13.5"></line>
+      <line x1="17.7" y1="17" x2="14" y2="13.5"></line>
+    </svg>
+    <span>Map</span>
+  </button>
 
   <div class="modal-overlay" id="dev-modal">
     <div class="modal-content dev-modal-card">
@@ -292,6 +322,35 @@
       document.getElementById('goal-preview-btn').addEventListener('click', () => modal.classList.add('active'));
       document.getElementById('modal-close').addEventListener('click', () => modal.classList.remove('active'));
       modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('active'); });
+
+      const chartWrap = document.getElementById('chart-wrap');
+      const chartFab = document.getElementById('chart-fab');
+      const chartCloseBtn = document.getElementById('chart-close');
+      const isMobileView = () => window.matchMedia('(max-width: 1024px)').matches;
+
+      const openChart = () => {
+        if (!isMobileView()) return;
+        chartWrap.classList.add('active');
+        document.body.classList.add('chart-open');
+        setTimeout(() => {
+          if (typeof initVisualization === 'function') initVisualization();
+          window.dispatchEvent(new Event('resize'));
+        }, 280);
+      };
+      const closeChart = () => {
+        chartWrap.classList.remove('active');
+        document.body.classList.remove('chart-open');
+      };
+
+      chartFab.addEventListener('click', openChart);
+      chartCloseBtn.addEventListener('click', closeChart);
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && chartWrap.classList.contains('active')) closeChart();
+      });
+
+      window.addEventListener('resize', () => {
+        if (!isMobileView() && chartWrap.classList.contains('active')) closeChart();
+      });
 
     });
   </script>
