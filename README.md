@@ -1,6 +1,6 @@
 # CS Webring - George Brown Polytechnic
 
-A webring to feature some of the most cracked CS students at George Brown Polytechnic and give them a place to showcase their personal sites. It's also a way for current students to discover alumni and connect with people who've been through the same programs. Each member is a node on a maple leaf visualization.
+A webring to feature some of the most cracked CS students at George Brown Polytechnic and give them a place to showcase their personal sites. It's also a way for current students to discover alumni and connect with people who've been through the same programs. Each member is a node on a husky visualization.
 
 ## Live
 

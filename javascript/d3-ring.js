@@ -31,7 +31,7 @@ function build(targetId) {
   const h = wrapper.clientHeight;
 
   const total = webringData.sites.length;
-  const dotSize = 4;
+  const dotSize = 8;
   const dotColor = "#4a4a54";
   const hoverColor = "#0077c2";
   const lineColor = "#2a2a30";
@@ -51,11 +51,27 @@ function build(targetId) {
   const zoom = d3
     .zoom()
     .scaleExtent([0.02, 4])
+    .filter((ev) => {
+      if (ev.type === 'wheel') return true;
+      return !ev.ctrlKey && !ev.button;
+    })
     .on("zoom", (ev) => {
       g.attr("transform", ev.transform);
     });
 
   svg.call(zoom);
+  svg.on("wheel.zoom", function(ev) {
+    ev.preventDefault();
+    const currentTransform = d3.zoomTransform(this);
+    if (ev.ctrlKey || Math.abs(ev.deltaY) > Math.abs(ev.deltaX) && !ev.deltaX) {
+      const scale = currentTransform.k * Math.pow(2, -ev.deltaY * 0.002);
+      const t = currentTransform.scale(scale / currentTransform.k);
+      svg.call(zoom.transform, t);
+    } else {
+      const t = currentTransform.translate(-ev.deltaX / currentTransform.k, -ev.deltaY / currentTransform.k);
+      svg.call(zoom.transform, t);
+    }
+  }, { passive: false });
 
   webringData.sites.forEach((entry, idx) => {
     entry.id = `node-${idx}`;
@@ -76,7 +92,7 @@ function build(targetId) {
   const crestOffsetX = (w - CREST_BASE_W * crestScale) / 2 + tier.offX;
   const crestOffsetY = (h - CREST_BASE_H * crestScale) / 2 + tier.offY;
 
-  const huskyScale = Math.min(w / HUSKY_W, h / HUSKY_H) * 0.75;
+  const huskyScale = Math.min(w / HUSKY_W, h / HUSKY_H) * 2.5;
   const huskyOffsetX = (w - HUSKY_W * huskyScale) / 2;
   const huskyOffsetY = (h - HUSKY_H * huskyScale) / 2;
 
@@ -172,27 +188,18 @@ function build(targetId) {
     .text((d) => d.website.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, ""))
     .attr("fill", "#6b6b75")
     .attr("font-family", "'IBM Plex Mono', ui-monospace, monospace")
-    .style("font-size", "7px")
-    .style("pointer-events", "none")
-    .style("opacity", 0);
-
-  function forceHusky(strength) {
-    return function (alpha) {
-      webringData.sites.forEach((d) => {
-        d.vx += (d.targetX - d.x) * strength * alpha;
-        d.vy += (d.targetY - d.y) * strength * alpha;
-      });
-    };
-  }
+    .style("font-size", "9px")
+    .style("pointer-events", "none");
 
   const sim = d3
     .forceSimulation()
     .force(
       "link",
-      d3.forceLink().id((d) => d.id).distance(40).strength(0.15)
+      d3.forceLink().id((d) => d.id).distance(100)
     )
-    .force("collision", d3.forceCollide().radius(dotSize * 1.2))
-    .force("husky", forceHusky(0.3))
+    .force("charge", d3.forceManyBody().strength(-100))
+    .force("center", d3.forceCenter(w / 2, h / 2))
+    .force("collision", d3.forceCollide().radius(dotSize * 2))
     .alphaDecay(0.05)
     .velocityDecay(0.6);
 
@@ -270,14 +277,12 @@ function build(targetId) {
   }
 
   function hover() {
-    d3.select(this).attr("fill", hoverColor).attr("r", dotSize + 2);
-    d3.select(this.parentNode).select("text").style("opacity", 1);
+    d3.select(this).attr("fill", hoverColor);
     svg.style("cursor", "pointer");
   }
 
   function leave() {
-    d3.select(this).attr("fill", dotColor).attr("r", dotSize);
-    d3.select(this.parentNode).select("text").style("opacity", 0);
+    d3.select(this).attr("fill", dotColor);
     svg.style("cursor", "move");
   }
 
