@@ -13,7 +13,9 @@ const CREST_OUTLINE =
 const CREST_BASE_W = 400;
 const CREST_BASE_H = 370;
 
-const LEAF_OUTLINE = "m-90 2030 45-863a95 95 0 0 0-111-98l-859 151 116-320a65 65 0 0 0-20-73l-941-762 212-99a65 65 0 0 0 34-79l-186-572 542 115a65 65 0 0 0 73-38l105-247 423 454a65 65 0 0 0 111-57l-204-1052 327 189a65 65 0 0 0 91-27l332-652 332 652a65 65 0 0 0 91 27l327-189-204 1052a65 65 0 0 0 111 57l423-454 105 247a65 65 0 0 0 73 38l542-115-186 572a65 65 0 0 0 34 79l212 99-941 762a65 65 0 0 0-20 73l116 320-859-151a95 95 0 0 0-111 98l45 863z";
+const HUSKY_OUTLINE = "M182.6 87.9L168.7 88.9L167.7 87.9L162.2 87.9L161.2 87.0L158.5 87.0L152.9 85.2L150.1 83.3L146.4 82.4L144.5 80.5L142.7 80.5L134.3 72.2L131.5 66.6L129.7 65.7L126.0 65.7L125.1 64.7L120.4 64.7L119.5 63.8L112.1 63.8L111.1 62.9L111.1 55.5L108.4 49.9L108.4 48.0L102.8 41.5L100.9 41.5L101.9 44.3L101.9 54.5L100.9 57.3L96.3 62.0L91.6 62.9L89.8 61.0L89.8 56.4L87.0 49.0L85.2 47.1L85.2 45.3L78.7 38.8L75.9 37.8L76.8 49.9L65.7 69.4L63.8 77.7L62.0 78.7L61.0 80.5L54.5 81.4L42.5 87.9L36.9 92.6L29.5 100.9L29.5 102.8L34.1 101.9L35.1 104.6L27.6 113.0L22.1 123.2L20.2 132.5L19.3 133.4L19.3 138.0L21.1 138.0L24.8 135.3L27.6 135.3L29.5 137.1L30.4 145.5L32.3 147.3L32.3 150.1L35.1 155.7L41.5 164.0L42.5 164.0L44.3 166.8L49.0 170.5L49.0 171.4L62.0 171.4L61.0 168.7L61.0 162.2L60.1 161.2L61.0 149.2L62.9 146.4L63.8 142.7L65.7 140.8L65.7 139.0L72.2 131.5L74.0 130.6L74.9 124.1L78.7 117.6L83.3 113.9L83.3 113.0L81.4 113.0L75.9 117.6L74.0 117.6L73.1 114.8L75.9 111.1L75.9 109.3L81.4 103.7L81.4 100.0L87.0 97.2L95.4 96.3L96.3 95.4L103.7 95.4L103.7 94.4L98.1 92.6L93.5 87.9L93.5 82.4L94.4 80.5L99.1 76.8L104.6 74.9L113.0 74.0L113.9 73.1L124.1 74.0L134.3 83.3L140.8 87.0L142.7 87.0L145.5 88.9L159.4 93.5L164.9 94.4L166.8 100.0L168.7 101.9L173.3 103.7L173.3 107.4L165.9 112.1L142.7 112.1L134.3 115.8L130.6 119.5L130.6 122.3L126.0 125.1L122.3 125.1L113.9 127.8L108.4 130.6L107.4 132.5L105.6 132.5L100.9 136.2L98.1 139.9L97.2 139.9L92.6 145.5L91.6 148.2L89.8 149.2L84.2 159.4L81.4 159.4L80.5 158.5L81.4 148.2L83.3 145.5L83.3 143.6L88.9 137.1L89.8 134.3L81.4 139.0L74.9 147.3L72.2 154.7L72.2 164.0L74.0 168.7L74.0 171.4L92.6 171.4L92.6 169.6L97.2 162.2L101.9 157.5L104.6 158.5L106.5 164.9L108.4 164.9L108.4 159.4L109.3 156.6L113.0 151.0L115.8 152.0L116.7 156.6L118.6 160.3L119.5 160.3L120.4 147.3L122.3 145.5L122.3 143.6L125.1 138.0L132.5 131.5L138.0 130.6L139.0 129.7L142.7 129.7L143.6 128.8L152.0 128.8L152.9 127.8L155.7 127.8L166.8 123.2L173.3 118.6L178.9 111.1L179.8 107.4L181.6 105.6L181.6 102.8L183.5 99.1L183.5 89.8Z";
+const HUSKY_W = 200;
+const HUSKY_H = 200;
 
 function initVisualization() {
   if (rendered) return;
@@ -29,7 +31,7 @@ function build(targetId) {
   const h = wrapper.clientHeight;
 
   const total = webringData.sites.length;
-  const dotSize = 8;
+  const dotSize = 4;
   const dotColor = "#4a4a54";
   const hoverColor = "#0077c2";
   const lineColor = "#2a2a30";
@@ -60,11 +62,11 @@ function build(targetId) {
   });
 
   function getScaleTier(width) {
-    if (width < 480)  return { crest: 1.40, outline: 1500, intro: 2.0, offX: -20, offY:  50 };
-    if (width < 768)  return { crest: 1.15, outline: 1800, intro: 2.2, offX: -30, offY:  65 };
-    if (width < 1024) return { crest: 1.00, outline: 2100, intro: 2.4, offX: -35, offY:  75 };
-    if (width < 1440) return { crest: 0.90, outline: 2300, intro: 2.6, offX: -40, offY:  80 };
-    return              { crest: 0.80, outline: 2600, intro: 2.8, offX: -50, offY: 100 };
+    if (width < 480)  return { crest: 1.40, intro: 2.0, offX: -20, offY:  50 };
+    if (width < 768)  return { crest: 1.15, intro: 2.2, offX: -30, offY:  65 };
+    if (width < 1024) return { crest: 1.00, intro: 2.4, offX: -35, offY:  75 };
+    if (width < 1440) return { crest: 0.90, intro: 2.6, offX: -40, offY:  80 };
+    return              { crest: 0.80, intro: 2.8, offX: -50, offY: 100 };
   }
   const tier = getScaleTier(w);
 
@@ -74,20 +76,24 @@ function build(targetId) {
   const crestOffsetX = (w - CREST_BASE_W * crestScale) / 2 + tier.offX;
   const crestOffsetY = (h - CREST_BASE_H * crestScale) / 2 + tier.offY;
 
-  const outlineScale = Math.min(w, h) / tier.outline;
+  const huskyScale = Math.min(w / HUSKY_W, h / HUSKY_H) * 0.75;
+  const huskyOffsetX = (w - HUSKY_W * huskyScale) / 2;
+  const huskyOffsetY = (h - HUSKY_H * huskyScale) / 2;
+
   const trace = svg.append("path")
-    .attr("d", LEAF_OUTLINE)
+    .attr("d", HUSKY_OUTLINE)
     .attr("fill", "none")
-    .attr("stroke", "none")
-    .attr("transform", `translate(${w / 2},${h / 2}) scale(${outlineScale})`);
+    .attr("stroke", "none");
 
   const traceLength = trace.node().getTotalLength();
 
   webringData.sites.forEach((entry, i) => {
     const along = (traceLength * i) / total;
     const p = trace.node().getPointAtLength(along);
-    entry.x = w / 2 + p.x * outlineScale;
-    entry.y = h / 2 + p.y * outlineScale;
+    entry.targetX = huskyOffsetX + p.x * huskyScale;
+    entry.targetY = huskyOffsetY + p.y * huskyScale;
+    entry.x = entry.targetX;
+    entry.y = entry.targetY;
   });
 
   trace.remove();
@@ -162,12 +168,22 @@ function build(targetId) {
   node
     .append("text")
     .attr("text-anchor", "middle")
-    .attr("dy", dotSize + 12)
+    .attr("dy", dotSize + 10)
     .text((d) => d.website.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, ""))
     .attr("fill", "#6b6b75")
     .attr("font-family", "'IBM Plex Mono', ui-monospace, monospace")
-    .style("font-size", "9px")
-    .style("pointer-events", "none");
+    .style("font-size", "7px")
+    .style("pointer-events", "none")
+    .style("opacity", 0);
+
+  function forceHusky(strength) {
+    return function (alpha) {
+      webringData.sites.forEach((d) => {
+        d.vx += (d.targetX - d.x) * strength * alpha;
+        d.vy += (d.targetY - d.y) * strength * alpha;
+      });
+    };
+  }
 
   const sim = d3
     .forceSimulation()
@@ -176,6 +192,7 @@ function build(targetId) {
       d3.forceLink().id((d) => d.id).distance(40).strength(0.15)
     )
     .force("collision", d3.forceCollide().radius(dotSize * 1.2))
+    .force("husky", forceHusky(0.3))
     .alphaDecay(0.05)
     .velocityDecay(0.6);
 
@@ -253,12 +270,14 @@ function build(targetId) {
   }
 
   function hover() {
-    d3.select(this).attr("fill", hoverColor);
+    d3.select(this).attr("fill", hoverColor).attr("r", dotSize + 2);
+    d3.select(this.parentNode).select("text").style("opacity", 1);
     svg.style("cursor", "pointer");
   }
 
   function leave() {
-    d3.select(this).attr("fill", dotColor);
+    d3.select(this).attr("fill", dotColor).attr("r", dotSize);
+    d3.select(this.parentNode).select("text").style("opacity", 0);
     svg.style("cursor", "move");
   }
 
