@@ -51,27 +51,11 @@ function build(targetId) {
   const zoom = d3
     .zoom()
     .scaleExtent([0.02, 4])
-    .filter((ev) => {
-      if (ev.type === 'wheel') return true;
-      return !ev.ctrlKey && !ev.button;
-    })
     .on("zoom", (ev) => {
       g.attr("transform", ev.transform);
     });
 
   svg.call(zoom);
-  svg.on("wheel.zoom", function(ev) {
-    ev.preventDefault();
-    const currentTransform = d3.zoomTransform(this);
-    if (ev.ctrlKey || Math.abs(ev.deltaY) > Math.abs(ev.deltaX) && !ev.deltaX) {
-      const scale = currentTransform.k * Math.pow(2, -ev.deltaY * 0.002);
-      const t = currentTransform.scale(scale / currentTransform.k);
-      svg.call(zoom.transform, t);
-    } else {
-      const t = currentTransform.translate(-ev.deltaX / currentTransform.k, -ev.deltaY / currentTransform.k);
-      svg.call(zoom.transform, t);
-    }
-  }, { passive: false });
 
   webringData.sites.forEach((entry, idx) => {
     entry.id = `node-${idx}`;

@@ -117,7 +117,7 @@
           <div class="goal-bar">
             <div class="goal-fill" id="goal-fill"></div>
           </div>
-          <div class="goal-label">Help us fill the husky</div>
+          <div class="goal-label">Help us fill the <button class="goal-label-husky" id="goal-label-husky" type="button">Husky</button></div>
         </div>
         <button class="goal-preview-btn" id="goal-preview-btn">Preview</button>
       </div>
@@ -134,7 +134,17 @@
           <circle cx="11" cy="11" r="8"></circle>
           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
         </svg>
-        <input type="text" id="search" placeholder="Search by name, year or url..." />
+        <input type="text" id="search" placeholder="Search George Brown Student by name, year, url..." />
+        <button class="search-filter-btn" id="search-filter-btn" type="button" aria-haspopup="true" aria-expanded="false">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+          </svg>
+          <span id="search-filter-label">All years</span>
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </button>
+        <div class="search-filter-menu" id="search-filter-menu" role="menu"></div>
       </div>
 
       <div class="students-header">Members</div>
@@ -237,6 +247,26 @@
     <span>Map</span>
   </button>
 
+  <div class="husky-cursor" id="husky-cursor" aria-hidden="true"></div>
+
+  <div class="context-menu" id="context-menu" role="menu">
+    <button class="context-menu-item" data-action="open" type="button" role="menuitem">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        <polyline points="15 3 21 3 21 9"></polyline>
+        <line x1="10" y1="14" x2="21" y2="3"></line>
+      </svg>
+      <span>Open URL</span>
+    </button>
+    <button class="context-menu-item" data-action="search" type="button" role="menuitem">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+      <span>Search George Brown Student</span>
+    </button>
+  </div>
+
   <div class="modal-overlay" id="dev-modal">
     <div class="modal-content dev-modal-card">
       <button class="modal-close" id="dev-modal-close">&times;</button>
@@ -303,12 +333,16 @@
       document.getElementById('dev-modal').classList.add('active');
     }
 
+    let activeYearFilter = null;
+
     function renderStudents(filter) {
       const list = document.getElementById('student-list');
       list.innerHTML = '';
       const term = (filter || '').toLowerCase();
 
       webringData.sites.forEach(site => {
+        if (activeYearFilter !== null && site.year !== activeYearFilter) return;
+
         const matches = !term ||
           site.name.toLowerCase().includes(term) ||
           site.year.toString().includes(term) ||
@@ -322,6 +356,8 @@
         a.href = site.website;
         a.target = '_blank';
         a.className = 'student-item';
+        a.dataset.website = site.website;
+        a.dataset.name = site.name;
 
         a.innerHTML = `
           <span class="student-name">${site.name}</span>
@@ -330,6 +366,36 @@
         `;
 
         list.appendChild(a);
+      });
+    }
+
+    function populateYearFilter() {
+      const menu = document.getElementById('search-filter-menu');
+      const years = [...new Set(webringData.sites.map(s => s.year))].sort((a, b) => b - a);
+      menu.innerHTML = '';
+
+      const makeOption = (label, value) => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'search-filter-option';
+        b.dataset.year = value;
+        b.textContent = label;
+        b.setAttribute('role', 'menuitem');
+        return b;
+      };
+
+      menu.appendChild(makeOption('All years', 'all'));
+      years.forEach(y => menu.appendChild(makeOption(String(y), String(y))));
+
+      menu.querySelectorAll('.search-filter-option').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const val = btn.dataset.year;
+          activeYearFilter = val === 'all' ? null : parseInt(val, 10);
+          document.getElementById('search-filter-label').textContent = val === 'all' ? 'All years' : val;
+          document.getElementById('search-filter-menu').classList.remove('active');
+          document.getElementById('search-filter-btn').setAttribute('aria-expanded', 'false');
+          renderStudents(document.getElementById('search').value);
+        });
       });
     }
 
@@ -347,6 +413,7 @@
         .then(data => {
           webringData.sites = data;
           renderStudents();
+          populateYearFilter();
           updateGoal();
           initVisualization();
         })
@@ -357,6 +424,14 @@
       const searchInput = document.getElementById('search');
       searchInput.addEventListener('input', e => renderStudents(e.target.value));
 
+      const huskyCursor = document.getElementById('husky-cursor');
+      searchInput.addEventListener('mouseenter', () => huskyCursor.classList.add('active'));
+      searchInput.addEventListener('mouseleave', () => huskyCursor.classList.remove('active'));
+      searchInput.addEventListener('mousemove', (e) => {
+        huskyCursor.style.left = e.clientX + 'px';
+        huskyCursor.style.top = e.clientY + 'px';
+      });
+
       document.querySelectorAll('[data-dev]').forEach(btn => {
         btn.addEventListener('click', () => openDevModal(btn.dataset.dev));
       });
@@ -365,9 +440,61 @@
       devModal.addEventListener('click', (e) => { if (e.target === devModal) devModal.classList.remove('active'); });
 
       const modal = document.getElementById('goal-modal');
-      document.getElementById('goal-preview-btn').addEventListener('click', () => modal.classList.add('active'));
+      const openGoalModal = () => modal.classList.add('active');
+      document.getElementById('goal-preview-btn').addEventListener('click', openGoalModal);
+      document.getElementById('goal-label-husky').addEventListener('click', openGoalModal);
       document.getElementById('modal-close').addEventListener('click', () => modal.classList.remove('active'));
       modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('active'); });
+
+      const filterBtn = document.getElementById('search-filter-btn');
+      const filterMenu = document.getElementById('search-filter-menu');
+      filterBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const open = filterMenu.classList.toggle('active');
+        filterBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+      document.addEventListener('click', (e) => {
+        if (!filterMenu.contains(e.target) && e.target !== filterBtn) {
+          filterMenu.classList.remove('active');
+          filterBtn.setAttribute('aria-expanded', 'false');
+        }
+      });
+
+      const contextMenu = document.getElementById('context-menu');
+      let contextTarget = null;
+
+      document.getElementById('student-list').addEventListener('contextmenu', (e) => {
+        const item = e.target.closest('.student-item');
+        if (!item) return;
+        e.preventDefault();
+        contextTarget = { website: item.dataset.website, name: item.dataset.name };
+
+        contextMenu.classList.add('active');
+        const rect = contextMenu.getBoundingClientRect();
+        const maxX = window.innerWidth - rect.width - 8;
+        const maxY = window.innerHeight - rect.height - 8;
+        contextMenu.style.left = Math.min(e.clientX, maxX) + 'px';
+        contextMenu.style.top = Math.min(e.clientY, maxY) + 'px';
+      });
+
+      const closeContextMenu = () => contextMenu.classList.remove('active');
+      document.addEventListener('click', closeContextMenu);
+      document.addEventListener('scroll', closeContextMenu, true);
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeContextMenu(); });
+
+      contextMenu.querySelectorAll('.context-menu-item').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (!contextTarget) return;
+          if (btn.dataset.action === 'open') {
+            window.open(contextTarget.website, '_blank', 'noopener');
+          } else if (btn.dataset.action === 'search') {
+            const q = encodeURIComponent(`"${contextTarget.name}" George Brown College student`);
+            window.open(`https://www.google.com/search?q=${q}`, '_blank', 'noopener');
+          }
+          closeContextMenu();
+        });
+      });
 
       const tutorialModal = document.getElementById('tutorial-modal');
       document.getElementById('tutorial-fab').addEventListener('click', () => tutorialModal.classList.add('active'));
